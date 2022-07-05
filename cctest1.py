@@ -2,6 +2,9 @@ import base64
 import requests
 import os
 import cv2
+import logging
+
+
 
 """
 传入图片路径，输出其中的文字（str）
@@ -77,7 +80,44 @@ def dpath(file,png=True,jpg=False,jpeg=False):
     print(path)
     return path
 
+def request_ld():
+    host = 'https://www.baidu.com/?tn=87135040_1_oem_dg'
+    res = requests.get(host)
+    print(res)
+    res.raise_for_status()
+    with open('/Users/degangcheng/Desktop/code/ccode/result.txt', 'wb') as result:
+        for line in res.iter_content(200000):
+            result.write(line)
+
+    # if response:
+    #     print(str(response.json()))
+
+logging.basicConfig(level=logging.WARNING)
+
+def get_size(dir):
+    """
+    :param dir:文件路径
+    :return:输出该文件路径下包含所有文件的大小（字节）
+    """
+    size = 0
+    for root,dirs,file in os.walk(dir):
+        # print(file)
+        logging.debug(f'当前路径{root}')
+        logging.debug(f'目录有{dirs}')
+        logging.debug(f'文件有{file} \n')
+        for i in range(len(file)):
+            logging.debug(file[i])
+            path = os.path.join(root,file[i])
+            size_tmp = os.path.getsize(path)
+            size = size + size_tmp
+    print(size)
+    return size
+
+
+
 if __name__ == '__main__':
-    dpath('/Users/degangcheng/Desktop/code/ccode/',jpg=False)
+    # dpath('/Users/degangcheng/Desktop/code/ccode/',jpg=False)
     # run_pic('ces0b.png')
+    # request_ld()
     # size_change('ces0b.png')
+    get_size('/Users/degangcheng/Desktop/code/filecompare/testfile')
